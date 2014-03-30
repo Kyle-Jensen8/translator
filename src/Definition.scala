@@ -1,6 +1,7 @@
 /*
  *The Definition class has a field for an Englisbjecth
  * word and the Spanish counterpart.    
+ * THIS SHOULD PUSH TO MARKS AND MINE
  */
 class Definition {
 
@@ -8,7 +9,6 @@ class Definition {
 	//and the Spanish word 
 	var englishWord: String = _ 
 	var spanishWord: String = _
-
 	/*
 	 * Main Method
 	 */
