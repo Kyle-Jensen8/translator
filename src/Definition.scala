@@ -1,7 +1,6 @@
 /*
- *The Definition class has a field for an Englisbjecth
+ *The Definition class has a field for an English
  * word and the Spanish counterpart.    
- * THIS SHOULD PUSH TO MARKS AND MINE
  */
 class Definition {
 
@@ -14,26 +13,5 @@ class Definition {
 	 */
 	def main(args: Array[String]) {
 		println("Hello, world!")
-}
-
-
-/*   		 
- * The EnglishDB class has an array of English words
- * hardcoded in. Think of it as an English Database
- */
-class EnglishDB {
-	  
-	var eDB : Array[String] =  _
-
-}
-
-/*
- * The SpanishDB class has an array of Spanish words
- * hardcoded in. Think of it as an Spanish Database
- */
-class SpanishDB{
-  
-	var sDB : Array[String] = _
-  
 	}
 }
