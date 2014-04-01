@@ -1,20 +1,19 @@
-import java.util.Random
-import java.io._
-//import scala.util.Random
-import scala.io.Source
-
+// Translator tester
 
 object Tester {
 
 	def main(args: Array[String]): Unit = {
-					
-	 val db = Map(("hola" -> "hello"),
+	
+	 // Spanish to English database
+	 val db = Map(
+	          // first set
+	          ("hola" -> "hello"),
               ("adios" -> "bye"),
               ("buenos dias" -> "good morning"),
               ("gracias" -> "thank you"),
               ("si" -> "yes"),
               ("bien" -> "good"),
-              // second set if user correctly answer 100%
+              // second set (if user correctly answer 100%)
               ("nombre" -> "name"),
               ("feche" -> "date"),
               ("uno" -> "one"),
@@ -22,13 +21,15 @@ object Tester {
               ("tres" -> "three"),
               ("buenas tarde" -> "good afternoon"))
               
-    val db1 = Map((0 -> "hola"),
+    val db1 = Map(
+              // first set
+              (0 -> "hola"),
               (1 -> "adios"),
               (2 -> "buenos dias"),
               (3 -> "gracias"),
               (4 -> "si"),
               (5 -> "bien"),
-              // second set if user correctly answer 100%
+              // second set (if user correctly answer 100%)
               (6 -> "nombre"),
               (7 -> "feche"),
               (8 -> "uno"),
@@ -37,46 +38,48 @@ object Tester {
               (11 -> "buenas tarde")
               )
               
-   var goOn = true          
+   var goOn = true        
    var count = 0 // keeps count of how many questions you answer correct 
-   var idx = 0 // index
+   var key = 0 // used as key for db1 database
    
    while (goOn) {
      
-     for(i <- 0 to 5) {
+     // each set contains 6 questions
+     for(i <- 0 to 5) { 
+       
        var ok = true
-	   val question = db1(idx)
+	   val question = db1(key) // returns associated value of key in db1 database
 	   print("Spanish : ")
 	   println(question)
 	   print("English : ")
-       val ln = readLine() //prompts user input
-       ok = ln == (db(question))
+       val ln = readLine() // prompts user input
+       ok = ln == (db(question)) //checks user's answer
        
        if (ok) {
          println("Excellente!\n")
 	     count += 1
-	     idx += 1 }
+	     key += 1 }
        else {
          println("Sorry, nice try. Answer is : " + (db(question)) + "\n")
-         idx += 1 }
+         key += 1 }
        }
      
-	 //if user gets at least 6/6 correct 
-	 if (count > 5 && count < 7){
-	   println("********** Congratulations! You have UNLOCKED more words! **********\n")  
-	 }
-	 else if (count > db.size - 1){
-	   println("********** Congratulations! You are now a certified bilingual spearker!!! **********\n")
-	   goOn = false
-	 }
-	 else {
-	   println("You got " + count + "/" + idx)
-	   println("Study harder and try again!")
-	   goOn = false
-	 }
-	 
-   }// end of while
-    
-    
- }
-}
+	   // if user gets 6/6 correct continues with more words
+	   if (count > 5 && count < 7){
+	     println("********** Congratulations! You have UNLOCKED more words! **********\n")  
+	   }
+	   // if user gets 12/12 correct, end translator
+	   else if (count > db.size - 1){
+	     println("********** Congratulations! You are now a certified bilingual spearker!!! **********\n")
+	     goOn = false
+	   }
+	   // if user gets at least 1 wrong, end translator
+	   else {
+	     println("You got " + count + "/" + key)
+	     println("Study harder and try again!")
+	     goOn = false
+	     }
+	   
+       }// end of while 
+	 }//end of main
+	}
