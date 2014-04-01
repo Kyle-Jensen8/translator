@@ -1,53 +1,82 @@
 import java.util.Random
+import java.io._
+//import scala.util.Random
+import scala.io.Source
+
 
 object Tester {
 
 	def main(args: Array[String]): Unit = {
-			val a = new Definition
-					a.englishWord = "House"
-					a.spanishWord = "Casa"
-					println(a.englishWord + a.spanishWord) 
 					
 	 val db = Map(("hola" -> "hello"),
-              ("adios" -> "goodbye"),
-              ("mucho gusta" -> "nice to meet you"),
+              ("adios" -> "bye"),
+              ("buenos dias" -> "good morning"),
               ("gracias" -> "thank you"),
-              ("de nada" -> "you're welcome"),
-              ("bien" -> "good"))
+              ("si" -> "yes"),
+              ("bien" -> "good"),
+              // second set if user correctly answer 100%
+              ("nombre" -> "name"),
+              ("feche" -> "date"),
+              ("uno" -> "one"),
+              ("dos" -> "two"),
+              ("tres" -> "three"),
+              ("buenas tarde" -> "good afternoon"))
               
-    val db1 = Map((1 -> "hola"),
-              (2 -> "adios"),
-              (3 -> "mucho gusta"),
-              (4 -> "gracias"),
-              (5 -> "de nada"),
-              (6 -> "bien"))              
+    val db1 = Map((0 -> "hola"),
+              (1 -> "adios"),
+              (2 -> "buenos dias"),
+              (3 -> "gracias"),
+              (4 -> "si"),
+              (5 -> "bien"),
+              // second set if user correctly answer 100%
+              (6 -> "nombre"),
+              (7 -> "feche"),
+              (8 -> "uno"),
+              (9 -> "dos"),
+              (10 -> "tres"),
+              (11 -> "buenas tarde")
+              )
               
-     val db2 = Map((1 -> "hello"),
-              (2 -> "goodbye"),
-              (3 -> "nice to meet you"),
-              (4 -> "thank you"),
-              (5 -> "you're welcome"),
-              (6 -> "good"))
+   var goOn = true          
+   var count = 0 // keeps count of how many questions you answer correct 
+   var idx = 0 // index
+   
+   while (goOn) {
+     
+     for(i <- 0 to 5) {
+       var ok = true
+	   val question = db1(idx)
+	   print("Spanish : ")
+	   println(question)
+	   print("English : ")
+       val ln = readLine() //prompts user input
+       ok = ln == (db(question))
+       
+       if (ok) {
+         println("Excellente!\n")
+	     count += 1
+	     idx += 1 }
+       else {
+         println("Sorry, nice try. Answer is : " + (db(question)) + "\n")
+         idx += 1 }
+       }
+     
+	 //if user gets at least 6/6 correct 
+	 if (count > 5 && count < 7){
+	   println("********** Congratulations! You have UNLOCKED more words! **********\n")  
+	 }
+	 else if (count > db.size - 1){
+	   println("********** Congratulations! You are now a certified bilingual spearker!!! **********\n")
+	   goOn = false
+	 }
+	 else {
+	   println("You got " + count + "/" + idx)
+	   println("Study harder and try again!")
+	   goOn = false
+	 }
+	 
+   }// end of while
     
-    println(db)          
-              
-    // get value at index -> (map(index))
-    println(db("hola"))
     
-    // checks to see if index is contained in Map -> (map contains index)
-    println(db contains "la casa")
-    
-    // adds to Map -> (map + (index -> val))
-    val newDb = (db + ("buenos dias" -> "good morning"))
-    println(newDb)
-    
-    val rand = new Random(System.currentTimeMillis());
-    val random_index = rand.nextInt(db2.size);
-    val result = db2(random_index);
-    
-    println(result)
-    println(Map() ++ db.map(_.swap))
-    println(db)
-				
-	}
+ }
 }
