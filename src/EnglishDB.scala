@@ -3,5 +3,5 @@
  * hardcoded in. Think of it as an English Database
  */
 object EnglishDB {
-	var eDB : Array[String] =  _
+	var eDB : Array[EnglishWord] =  _
 }

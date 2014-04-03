@@ -3,7 +3,7 @@
 object Tester {
 
 	def main(args: Array[String]): Unit = {
-	
+		  
 	 // Spanish to English database
 	 val db = Map(
 	          // first set
@@ -37,6 +37,48 @@ object Tester {
               (10 -> "tres"),
               (11 -> "buenas tarde")
               )
+              
+   //this whole block of code asks the user if they want to add their own words
+   //and then loops through and lets then add as many as they want
+   var addWords = true
+   val db3: Map[EnglishWord, SpanishWord] = Map()
+   
+   println("do you want to add your own words to the database?")
+   println("answer yes or no")
+   var answer = readLine()
+   
+   if (answer == "yes"){ 
+     while (addWords == true){
+	   println("Enter your Spanish word : ")
+	   var spanW = readLine()
+	   println("Enter your English word : ")
+	   var englW = readLine()
+	   val eW = new EnglishWord(englW, true)
+	   val sW = new SpanishWord(spanW, true)
+	   db3 + (eW -> sW)
+	   println("Do you want to add another word?")
+	   println("answer yes or no")
+	   answer = readLine()
+	   if (answer == "no"){
+	     addWords = false
+	   }
+     }
+   }
+	
+	 //trying to print through the map to make sure values were added correctly
+	 //something wrong with iterator
+	 val dbItr = db3.iterator
+	 while (dbItr.hasNext){
+	   var enVal,spanVal = dbItr.next
+	   println("entering map pring loop")
+	   println(enVal)
+	   println(spanVal)
+	 }
+	 
+   
+
+              
+              
               
    var goOn = true        
    var count = 0 // keeps count of how many questions you answer correct 

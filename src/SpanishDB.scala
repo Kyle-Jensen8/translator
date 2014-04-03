@@ -4,6 +4,6 @@
  */
 object SpanishDB {
 
-	var sDB : Array[String] = _
+	var sDB : Array[SpanishWord] = _
   
 }
