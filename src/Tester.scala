@@ -3,7 +3,7 @@
 object Tester {
 
 	def main(args: Array[String]): Unit = {
-		  
+
 	 // Spanish to English database
 	 val db = Map(
 	          // first set
@@ -64,7 +64,7 @@ object Tester {
 	   }
      }
    }
-	
+
 	 //trying to print through the map to make sure values were added correctly
 	 //something wrong with iterator
 	 val dbItr = db3.iterator
@@ -74,7 +74,7 @@ object Tester {
 	   println(enVal)
 	   println(spanVal)
 	 }
-	 
+
    
 
               
@@ -121,7 +121,7 @@ object Tester {
 	     println("Study harder and try again!")
 	     goOn = false
 	     }
-	   
+
        }// end of while 
 	 }//end of main
 	}
