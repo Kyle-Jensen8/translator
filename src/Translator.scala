@@ -66,7 +66,8 @@ object Translator {
        println("Enter 2 - Remove words from my list")
        println("Enter 3 - View my personalized list")
        println("Enter 4 - Start Translator")
-       println("Enter 5 - Quit Translator")
+       println("Enter 5 - Clear your list")
+       println("Enter 6 - Quit Translator")
        println("=======================================================")
 	   answer = readLine()
 	   
@@ -119,9 +120,14 @@ object Translator {
                  println("Sorry, nice try. Answer is: " + value + "\n") }
                }
          println("********** You correctly answered " + count + " out of " + db3.size + " **********\n")
-       }   
+       }
        
        if (answer == "5"){
+         val db4 = Map[String, String]()
+         db3 = db4
+       }
+       
+       if (answer == "6"){
          goOn = false }
        }
      }
