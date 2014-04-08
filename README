@@ -30,7 +30,7 @@ On Mac Terminal:
   MacBook-Pro:bin MacBookPro$ scala -version
   Scala code runner version 2.10.4 -- Copyright 2002-2013, LAMP/EPFL
   
-- If scala is not install then install it and come back. If scala is install now go into folder that holds Translator.scala file and type the command at command prompt:
+- If scala is not install then install it and come back. If scala is install, navigate into folder that holds Translator.scala file and type the command at command prompt:
  
   $ scala Translator.scala
   
