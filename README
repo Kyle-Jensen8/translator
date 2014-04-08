@@ -12,4 +12,27 @@ This project is written in the Scala programming language and the authors are Ky
 
 How can I start using this study tool?
 --------------------------------------
-Using this tool is pretty darn easy to use. Just make sure you have the Scala programming language installed so you can run the source code. Download all of the .scala files in the src folder. From there you want to run the Translator.scala file. When you run this file, the program will start!
+Using this tool is pretty darn easy to use. Just make sure you have the Scala programming language installed so you can run the source code. 
+
+On Eclipse IDE:
+- Scala must be installed on Eclipse to run Scala projects. If not yet set up go to: http://scala-ide.org/docs/user/gettingstarted.html
+
+- Download all of the .scala files in the src folder. From there you want to run the Translator.scala file. When you run this file, the program will start!
+
+On Mac Terminal: 
+- Verify if you have scala installed by typing the command at command prompt:
+
+  $ scala -version
+  
+  then enter return and you should see something similar to:
+  
+  javac 1.7.0_51
+  MacBook-Pro:bin MacBookPro$ scala -version
+  Scala code runner version 2.10.4 -- Copyright 2002-2013, LAMP/EPFL
+  
+- If scala is not install then install it and come back. If scala is install now go into folder that holds Translator.scala file and type the command at command prompt:
+ 
+  $ scala Translator.scala
+  
+  then enter return and enjoy!
+  
