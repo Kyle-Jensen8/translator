@@ -123,8 +123,8 @@ object Translator {
        }
        
        if (answer == "5"){
-         val db4 = Map[String, String]()
-         db3 = db4
+         val db4 = Map[String, String]() //makes a new Map that is empty
+         db3 = db4 //sets the old filled map to the new empty Map
        }
        
        if (answer == "6"){
