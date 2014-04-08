@@ -1,0 +1,15 @@
+Welcome to Translator! 
+
+What is it?
+-----------
+Tranlator is a program written to help you study Spanish. It is written in a format where the user can input their own Spanish and English words, or the user can use the words hardcoded into the program. The user will be shown a word in Spanish, and then prompted to type in the corresponding word in English.
+
+
+Who wrote this?
+---------------
+This project is written in the Scala programming language and the authors are Kyle Jensen and Mark Gapasin.
+
+
+How can I start using this study tool?
+--------------------------------------
+Using this tool is pretty darn easy to use. Just make sure you have the Scala programming language installed so you can run the source code. Download all of the .scala files in the src folder. From there you want to run the Translator.scala file. When you run this file, the program will start!
