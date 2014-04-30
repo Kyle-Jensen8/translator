@@ -4,12 +4,10 @@ import BorderPanel.Position._ //for borderpanel location
 import scala.io.Source // for opening files
 import scala.swing.event._ //for case events
 import TabbedPane._
-import javax.imageio.ImageIO //for read
-import java.io.File //to create new File
+import javax.swing.ImageIcon // for importing image
 
-object Study {
+object Study extends SimpleSwingApplication{
   
-   def main(args: Array[String]): Unit = {
   
   val tabs = new TabbedPane {
     
@@ -73,11 +71,11 @@ object Study {
         } -> Center     
     }) // end of study list page
     
-    pages += new Page("Study Images", new BorderPanel {
+   pages += new Page("Study Images", new BorderPanel {
       
-      case class Spanglish(spanish: String, english: String, loc: String)
-      
-      var db2 = Array[Spanglish](
+    case class Spanglish(spanish: String, english: String, loc: String)
+    
+    var db = Array[Spanglish](
         Spanglish("uno", "one", "src/images/uno.jpg"),
         Spanglish("dos", "two", "src/images/dos.jpg"),
         Spanglish("tres", "three", "src/images/tres.jpg"),
@@ -88,70 +86,73 @@ object Study {
         Spanglish("el tio", "uncle", "src/images/tio.jpg"),
         Spanglish("el primo", "cousin", "src/images/primo.jpg")
         )
-               
-    val spanishField = new Label("")
-    val englishField = new Label("")
-    val locField = new Label("")
-          
-    val database = new ListView(db2.map(_.english)) {
-      listenTo(selection) 
-      reactions += {
-        case event: SelectionChanged =>  //partial function only listen to SelectionChanged
-          val theDB = db2(selection.leadIndex)
-          spanishField.text = theDB.spanish
-          englishField.text = theDB.english
-          locField.text = theDB.loc
-          
-          val myImage = ImageIO.read(new File(locField.text))
-          val imgPanel = new Label {
-            override def paint(g:Graphics2D){
-            g.drawImage(myImage,100,20,null)
+    
+    val spanishField = new Label("")    
+    val englishField = new TextField("")  
+    val locField = new Label (db.head.loc)
+    
+       
+      
+      var dbCopy = db 
+  
+      // reads in new Images
+      val myImage = new Label { 
+        icon = new ImageIcon(locField.text)
+      }      
+      
+      def displayAnswer {
+        if(dbCopy.isEmpty){
+              // does nothing, stops it from going out of bounds
             }
-            preferredSize = new Dimension(400,250)
-            } 
-          
-          
-          def frame = new Frame {
-            title = "Translator - Images"
-              
-            val answerButton = new Button {
-              text = "Spanish Translation"  
+            else {
+            spanishField.text =  dbCopy.head.spanish
             }
-            val answerLabel = new Label {
-              listenTo(answerButton)
-              reactions += {
-                case ButtonClicked(_) | EditDone(_) => text = spanishField.text
-              }
+        }
+
+      val answerButton = new Button{
+        text = "See Spanish Translation"
+          listenTo(this)
+          reactions += {
+          case ButtonClicked(_) | EditDone(_) =>
+            displayAnswer
+        }         
+      }      
+ 
+      def imgPanel = new BorderPanel{
+        layout += myImage -> Center
+        listenTo(nextButton)
+        reactions += {
+          case ButtonClicked(_) | EditDone(_) =>
+            changeImage
+        }
+        preferredSize = new Dimension(100,100)
+       }
+      
+      def changeImage {
+        if(dbCopy.length == 1){
+              nextButton.text = "Restart Study Images"  
             }
-            val label = new Label {
-              text = englishField.text
+        else {
+            dbCopy = dbCopy.tail
+            locField.text = dbCopy.head.loc
+            myImage.icon  = new ImageIcon(locField.text)
+            spanishField.text =  "" //clear answer
             }
-            
-            contents = new BorderPanel {
-              layout += imgPanel -> North
-              layout += new GridPanel(2,1) {
-                border = Swing.EmptyBorder(0, 50, 10, 50)
-                contents += answerLabel
-                contents += answerButton
-            } -> Center
-            }
-            centerOnScreen
-        
-              // this allows the user to close window without exiting app
-              import javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE
-              peer.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE)
-              override def closeOperation() { close() }
-            }
-          frame.open
-          }
       }
       
-      //beginning of study images layout
-        layout += new BorderPanel {
-          border = Swing.EmptyBorder(10, 50, 30, 50)
-          layout += new Label ("Please select a word to view") -> North
-          layout += new ScrollPane(database) -> Center
-        } -> Center        
+      val nextButton = new Button{
+        text = "Next Image"
+      }
+      
+        // beginning of layout for study image page
+        layout += imgPanel -> Center
+        layout += new GridPanel(3,1) {
+          border = Swing.EmptyBorder(0, 20, 10, 20)
+          contents += spanishField 
+          contents += answerButton 
+          contents += nextButton 
+        } -> South
+           
 
     }) // end of study images page
     
@@ -165,19 +166,20 @@ object Study {
   }
    
   
-  val frame = new MainFrame { 
+  val top = new MainFrame { 
     title = "Translator v2.0 | Study"
     contents = ui
     centerOnScreen
     
-    size = new Dimension(450,300)   
+    size = new Dimension(450,400)   
       
     // this allows the user to close window without exiting app
     import javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE
     peer.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE)
     override def closeOperation() { close() }
     }
-  frame.open
-   }
+  
+  top.open
+
 }
 

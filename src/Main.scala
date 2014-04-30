@@ -1,6 +1,5 @@
 import swing._
-import javax.imageio.ImageIO //for read
-import java.io.File // to create new File
+import javax.swing.ImageIcon // for importing image
 import BorderPanel.Position._ //for borderpanel location
 
 object Main {
@@ -10,21 +9,18 @@ object Main {
       title = "Translator v2.0"
       
       //reads in image
-      val myImage = ImageIO.read(new File("src/images/translator.gif"))//starts looking in main folder
-      val imgPanel = new Panel {
-      override def paint(g:Graphics2D){
-      g.drawImage(myImage,20,55,null)
-      }
-      }  
-        
+      val myImage = new Label { 
+        icon = new ImageIcon("src/images/translator.gif") //starts looking in main folder
+      } 
+         
       contents = new BorderPanel {
-        layout += imgPanel -> Center
+        layout += myImage -> Center
         } 
       
       menuBar = new MenuBar {
         contents += new Menu ("Translator") {
           contents += new MenuItem(Action("Translator Quiz") { 
-            Translator.main(args)
+            Quiz.main(args)
             })
           contents += new MenuItem(Action("Study") {
             Study.main(args)
@@ -48,7 +44,7 @@ object Main {
           contents += new MenuItem("Begin Learning My List")
     }
   }
-  size = new Dimension(400,325)
+  size = new Dimension(450,300)
   centerOnScreen
 
   }// end of mainFrame
