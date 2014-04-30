@@ -4,7 +4,7 @@ import BorderPanel.Position._ //for borderpanel location
 
 object Main {
   
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]) = {
     val frame = new MainFrame {
       title = "Translator v2.0"
       

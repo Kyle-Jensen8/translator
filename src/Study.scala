@@ -6,8 +6,9 @@ import scala.swing.event._ //for case events
 import TabbedPane._
 import javax.swing.ImageIcon // for importing image
 
-object Study extends SimpleSwingApplication{
+object Study {
   
+  def main (args: Array[String]) {
   
   val tabs = new TabbedPane {
     
@@ -180,6 +181,7 @@ object Study extends SimpleSwingApplication{
     }
   
   top.open
+  }
 
 }
 

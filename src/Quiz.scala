@@ -4,7 +4,7 @@ import scala.swing.event._
 
 object Quiz {
   
-  def main(args: Array[String]){
+  def main(args: Array[String]) {
 
     case class Spanglish(spanish: String, english: String)
     
