@@ -15,10 +15,14 @@ object Main {
          
       contents = new BorderPanel {
         layout += myImage -> Center
+        layout += new Label {
+          border = Swing.EmptyBorder(0, 0, 70, 0)
+          text = "Translate yourself."
+        } -> South
         } 
       
       menuBar = new MenuBar {
-        contents += new Menu ("Translator") {
+        contents += new Menu ("Start") {
           contents += new MenuItem(Action("Translator Quiz") { 
             Quiz.main(args)
             })

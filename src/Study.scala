@@ -1,14 +1,14 @@
 
 import scala.swing._
-import BorderPanel.Position._ //for borderpanel location
-import scala.io.Source // for opening files
-import scala.swing.event._ //for case events
+import BorderPanel.Position._
+import scala.swing.event._
 import TabbedPane._
-import javax.swing.ImageIcon // for importing image
+import javax.swing.ImageIcon
+import javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE
 
 object Study {
   
-  def main (args: Array[String]) {
+  def main(args: Array[String]) = {
   
   val tabs = new TabbedPane {
     
@@ -74,9 +74,9 @@ object Study {
     
    pages += new Page("Study Images", new BorderPanel {
       
-    case class Spanglish(spanish: String, english: String, loc: String)
+      case class Spanglish(spanish: String, english: String, loc: String)
     
-    var db = Array[Spanglish](
+      var db = Array[Spanglish](
         Spanglish("uno", "one", "src/images/uno.jpg"),
         Spanglish("dos", "two", "src/images/dos.jpg"),
         Spanglish("tres", "three", "src/images/tres.jpg"),
@@ -88,12 +88,9 @@ object Study {
         Spanglish("el primo", "cousin", "src/images/primo.jpg")
         )
     
-    val spanishField = new Label("")    
-    val englishField = new TextField("")  
-    val locField = new Label (db.head.loc)
-    
-       
-      
+      val spanishField = new Label("")    
+      val englishField = new TextField("")  
+      val locField = new Label (db.head.loc)
       var dbCopy = db 
   
       // reads in new Images
@@ -101,9 +98,10 @@ object Study {
         icon = new ImageIcon(locField.text)
       }      
       
+      // Displays Spanish word that relates to image
       def displayAnswer {
         if(dbCopy.isEmpty){
-              // does nothing, stops it from going out of bounds
+            spanishField.text = ""
             }
             else {
             spanishField.text =  dbCopy.head.spanish
@@ -111,27 +109,32 @@ object Study {
         }
 
       val answerButton = new Button{
-        text = "See Spanish Translation"
+        text = "Answer"
           listenTo(this)
           reactions += {
-          case ButtonClicked(_) | EditDone(_) =>
+          case ButtonClicked(_) =>
             displayAnswer
         }         
       }      
  
+      // Loads images to panel depending on what button (next or restart) is clicked.
       def imgPanel = new BorderPanel{
         layout += myImage -> Center
-        listenTo(nextButton)
+        
+        listenTo(restartButton, nextButton)
         reactions += {
-          case ButtonClicked(_) | EditDone(_) =>
+          case ButtonClicked(`restartButton`) =>
+            restartImage
+          case ButtonClicked(`nextButton`) =>  
             changeImage
-        }
+        }     
         preferredSize = new Dimension(100,100)
        }
       
+      // Function reloads next image to view when nextButton is clicked
       def changeImage {
         if(dbCopy.length == 1){
-              nextButton.text = "Restart Study Images"  
+          spanishField.text = "End of Tutorial"  
             }
         else {
             dbCopy = dbCopy.tail
@@ -145,19 +148,43 @@ object Study {
         text = "Next Image"
       }
       
+      // Function reloads images to view when restartButton is clicked
+      def restartImage {
+        listenTo(restartButton)
+        reactions += {
+          case ButtonClicked(_) =>
+            dbCopy = db
+            locField.text = dbCopy.head.loc
+            myImage.icon  = new ImageIcon(locField.text)
+            spanishField.text =  "" //clear answer
+        }
+      }
+      
+      val restartButton = new Button{
+        text = "Restart Tutorial"
+          listenTo(this)
+          reactions += {
+          case ButtonClicked(_) =>
+            restartImage
+        }
+      }
+      
         // beginning of layout for study image page
         layout += imgPanel -> Center
-        layout += new GridPanel(3,1) {
+        layout += new GridPanel(2,1) {
           border = Swing.EmptyBorder(0, 20, 10, 20)
-          contents += spanishField 
-          contents += answerButton 
-          contents += nextButton 
+          contents += spanishField
+          contents += new GridPanel(1,3) {
+            contents += restartButton
+            contents += answerButton 
+            contents += nextButton 
+          }
         } -> South
            
 
     }) // end of study images page
     
-    pages += new Page("More Pages?", new BorderPanel {
+    pages += new Page("More Pages ?", new BorderPanel {
       layout += new Label("Under Construction") -> Center
     })
   }
@@ -179,9 +206,7 @@ object Study {
     peer.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE)
     override def closeOperation() { close() }
     }
-  
   top.open
   }
-
 }
 

@@ -1,10 +1,12 @@
-import scala.swing._
-import BorderPanel.Position._ //for borderpanel location
-import scala.swing.event._
 
-object Quiz {
+import scala.swing._
+import BorderPanel.Position._
+import scala.swing.event._
+import javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE
+
+object Quiz  {
   
-  def main(args: Array[String]) {
+    def main(args: Array[String]) = {
 
     case class Spanglish(spanish: String, english: String)
     
@@ -47,7 +49,7 @@ object Quiz {
       def answerLabel = new Label {
               listenTo(answerButton)
               reactions += {
-                case ButtonClicked(_) | EditDone(_) =>
+                case ButtonClicked(_) =>
                   if(englishField.text == userAnswerField.text){
                     text = ("Excellente!   " + spanishField.text + " -> " + englishField.text)
                     if (dbCopy.tail.isEmpty){
@@ -79,13 +81,13 @@ object Quiz {
       title = "Translator - Quiz"
       contents = new BorderPanel {
         layout += new GridPanel(5,1) {
-          border = Swing.EmptyBorder(20, 50, 50, 50)
+          border = Swing.EmptyBorder(20, 20, 50, 20)
           contents += new Label {
             text = "Translate the Spanish word into English: "
           }
           contents += spanishField
           contents += new BorderPanel {
-            border = Swing.EmptyBorder(15, 40, 15, 40)
+            border = Swing.EmptyBorder(15, 0, 15, 0)
             layout += new Label{
               text = "My Answer: "
             } -> West
@@ -108,5 +110,5 @@ object Quiz {
     override def closeOperation() { close() }      
       }    
     top.open
-  }
+    }
 }
