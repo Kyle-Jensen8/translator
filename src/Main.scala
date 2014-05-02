@@ -41,6 +41,7 @@ object Main {
         contents += new Menu ("Create") {
           contents += new MenuItem("View My List") { }
           contents += new Separator
+          contents += new MenuItem("Create My List") { }
           contents += new MenuItem("Add To My List") { }
           contents += new MenuItem("Delete From My List") { }
           contents += new MenuItem("Clear My List") { }
