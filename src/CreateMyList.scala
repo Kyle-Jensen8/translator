@@ -31,7 +31,7 @@ object CreateMyList {
             if (userEnglishField.text == "" || userSpanishField == ""){
               text = "Sorry, you left one or more of the fields blank"
             }
-            else {
+            else { //make sure this works!!!!
               val addSpan = new Spanglish(userEnglishField.text, userSpanishField.text)
               db:+addSpan
               userEnglishField.text = ""
@@ -44,22 +44,20 @@ object CreateMyList {
           contents = new BorderPanel {
         layout += new GridPanel(5,1) {
           border = Swing.EmptyBorder(20, 20, 50, 20)
-          
           contents += new BorderPanel{
           layout += new Label {
-            text = "Enter your Spanish Word  "
+            text = "Enter your Spanish Word   "
           } -> West 
           layout += userSpanishField -> Center
           }
           
           contents += new BorderPanel{
           layout += new Label {
-            text = "Enter your English Word  "
+            text = "Enter your English Word    "
           } -> West
           layout += userEnglishField -> Center
           }
           contents += new GridPanel(1,1) {
-            border = Swing.EmptyBorder(10, 40, 10, 40)
             contents += addButton
           }
           contents += addLabel
@@ -67,6 +65,8 @@ object CreateMyList {
       }
     centerOnScreen
     size = new Dimension(450,400)
+    peer.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE)
+    override def closeOperation() { close() }
     }
     mainFrame.open
   }
