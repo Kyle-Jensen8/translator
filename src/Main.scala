@@ -38,17 +38,17 @@ object Main {
             sys.exit(0)
             })
           } 
-        contents += new Menu ("Create") {
-          contents += new MenuItem("View My List") { }
-          contents += new Separator
-          contents += new MenuItem(Action("Create My List") {
+        contents += new Menu ("Manager Personal List") {
+          //contents += new MenuItem("View My List") { }
+          //contents += new Separator
+          contents += new MenuItem(Action("Manage My List") {
             CreateMyList.main(args)
           })
-          contents += new MenuItem("Add To My List") { }
-          contents += new MenuItem("Delete From My List") { }
-          contents += new MenuItem("Clear My List") { }
-          contents += new Separator
-          contents += new MenuItem("Begin Learning My List")
+          //contents += new MenuItem("Add To My List") { }
+          //contents += new MenuItem("Delete From My List") { }
+          //contents += new MenuItem("Clear My List") { }
+          //contents += new Separator
+          //contents += new MenuItem("Begin Learning My List")
     }
   }
   size = new Dimension(450,300)

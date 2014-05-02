@@ -17,9 +17,7 @@ object CreateMyList {
     val userEnglishField = new TextField("")
     val userSpanishField = new TextField("")
     
-    def mainFrame = new MainFrame {
-      title = "Creating List"
-     
+  val tabPane = new TabbedPane{
       val addButton = new Button{
         text = "Add to list!"
       } 
@@ -41,7 +39,7 @@ object CreateMyList {
      }
       
     
-          contents = new BorderPanel {
+      pages += new Page("Creating List", new BorderPanel {
         layout += new GridPanel(5,1) {
           border = Swing.EmptyBorder(20, 20, 50, 20)
           contents += new BorderPanel{
@@ -62,7 +60,16 @@ object CreateMyList {
           }
           contents += addLabel
         } -> Center
-      }
+      })
+    }
+    
+    val ui: Panel = new BorderPanel {
+      layout(tabPane) = BorderPanel.Position.Center
+    }
+    
+    val mainFrame = new MainFrame {
+    contents = ui
+    title = "Managing Personal List"
     centerOnScreen
     size = new Dimension(450,400)
     peer.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE)
