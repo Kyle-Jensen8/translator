@@ -38,7 +38,7 @@ object Main {
             sys.exit(0)
             })
           } 
-        contents += new Menu ("Manager Personal List") {
+        contents += new Menu ("My Personal List") {
           //contents += new MenuItem("View My List") { }
           //contents += new Separator
           contents += new MenuItem(Action("Manage My List") {
