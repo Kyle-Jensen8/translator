@@ -2,7 +2,7 @@ Welcome to Translator!
 
 What is it?
 -----------
-Tranlator is a program written to help you study Spanish. 
+Tranlator is a program written to help you study and learn Spanish. 
 
 The original Translator or Version 1 is a command line prompt program. It is written in a format where the user can input their own Spanish and English words, or the user can use the words hardcoded into the program. The user will be shown a word in Spanish, and then prompted to type in the corresponding word in English.
 
