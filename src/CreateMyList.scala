@@ -40,14 +40,16 @@ object CreateMyList {
         listenTo(addButton, userSpanishField, userEnglishField)
         reactions += {
           case ButtonClicked(addButton) => {
-            if (userEnglishField.text.length > 0 || userSpanishField.text.length > 0) {
+            if (userEnglishField.text.length == 0 || userSpanishField.text.length == 0) {
+            	text = "Sorry, you left one or more of the fields blank"
+            }
+            else {
               val addSpan = new Spanglish(userSpanishField.text, userEnglishField.text)
               db = db:+addSpan
               userEnglishField.text = ""
               userSpanishField.text = ""
               text = ""
             }
-            else text = "Sorry, you left one or more of the fields blank"
           }
         }
      }       
@@ -74,7 +76,8 @@ object CreateMyList {
     
     //start of CreateList layout
     border = Swing.EmptyBorder(20, 30, 20, 30)
-    layout += new GridPanel(4,1) {
+    layout += new GridPanel(5,1) {
+      contents += addLabel
       contents += new BorderPanel{
         layout += new Label {
           text = "Enter your Spanish Word  "
