@@ -1,10 +1,9 @@
 
 import scala.swing._
-import BorderPanel.Position._
-import scala.swing.event._
-import TabbedPane._
-import javax.swing.ImageIcon
-import javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE
+import BorderPanel.Position._ // for BorderPanel location
+import scala.swing.event._ // for events
+import TabbedPane._ 
+import javax.swing.ImageIcon // for importing images
 
 object Study {
   

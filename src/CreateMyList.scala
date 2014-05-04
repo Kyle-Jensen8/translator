@@ -11,8 +11,8 @@ object CreateMyList {
   def main(args: Array[String]) = {
    
     case class Spanglish(spanish: String, english: String)
-    var db = Array[Spanglish]() 
-   
+    var db = Array[Spanglish]( 
+    )   
     
     val userEnglishField = new TextField("")
     val userSpanishField = new TextField("")
@@ -30,18 +30,28 @@ object CreateMyList {
               text = "Sorry, you left one or more of the fields blank"
             }
             else { //make sure this works!!!!
-              val addSpan = new Spanglish(userEnglishField.text, userSpanishField.text)
-              db:+addSpan
+              val addSpan = new Spanglish(userSpanishField.text, userEnglishField.text)
+              db = db:+addSpan
               userEnglishField.text = ""
               userSpanishField.text = ""
+              text = ""
             }
         }
      }
+     
+    //val database = new ListView(db.map(_.spanish)) {
+    val database = new ListView(db.deep.mkString(" ")) {  
+      listenTo(addButton, addLabel) 
+      reactions += {
+        case ButtonClicked(_) | EditDone(_) =>  //partial function only listen to SelectionChanged
+          //listData = db.map(_.spanish)
+          listData = db.deep.mkString(" ")
+          }
+      }
       
     
       pages += new Page("Creating List", new BorderPanel {
         layout += new GridPanel(5,1) {
-          border = Swing.EmptyBorder(20, 20, 50, 20)
           contents += new BorderPanel{
           layout += new Label {
             text = "Enter your Spanish Word   "
@@ -59,7 +69,9 @@ object CreateMyList {
             contents += addButton
           }
           contents += addLabel
+          
         } -> Center
+        layout += new ScrollPane(database) -> South
       })
     }
     

@@ -2,7 +2,6 @@
 import scala.swing._
 import BorderPanel.Position._
 import scala.swing.event._
-import javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE
 
 object Quiz  {
   
