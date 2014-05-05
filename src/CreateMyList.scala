@@ -28,7 +28,7 @@ object CreateMyList {
         text = "Clear Your List!" 
       }    
       
-      def clearLabel = new Label {
+      val clearLabel = new Label {
         listenTo(clearButton)
         reactions += {
           case ButtonClicked(clearButton) =>
@@ -55,7 +55,7 @@ object CreateMyList {
         }
      } 
      
-     def displayLabel = new Label {
+     val displayLabel = new Label {
         listenTo(addButton, clearButton)
         reactions += {
           case ButtonClicked(addButton) => 
