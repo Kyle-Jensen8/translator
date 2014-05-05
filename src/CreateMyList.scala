@@ -1,3 +1,4 @@
+
 import scala.swing._
 import BorderPanel.Position._
 import scala.swing.event._
@@ -36,7 +37,7 @@ object CreateMyList {
         } 
       }
       
-     def addLabel = new Label {
+     val addLabel = new Label {
         listenTo(addButton, userSpanishField, userEnglishField)
         reactions += {
           case ButtonClicked(addButton) => {
@@ -52,8 +53,8 @@ object CreateMyList {
             }
           }
         }
-     }       
-      
+     } 
+     
      def displayLabel = new Label {
         listenTo(addButton, clearButton)
         reactions += {
