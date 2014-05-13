@@ -21,7 +21,7 @@ Using this tool is pretty darn easy to use. Just make sure you have the Scala pr
 On Eclipse IDE (Version 1 and 2):
 - Scala must be installed on Eclipse to run Scala projects. If not yet set up go to: http://scala-ide.org/docs/user/gettingstarted.html
 
-- Download all of the files in the src folder. To run the version 1 you should run the Translator.scala file. Translator Version 2 can be started by running Main.scala.
+- Download all of the files in the src folder and the Spanglish.text file. To run the version 1 you should run the Translator.scala file. Translator Version 2 can be started by running Main.scala.
 
 On Mac Terminal (Version 1 only):
 - Verify if you have scala installed by typing the command at command prompt:
