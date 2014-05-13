@@ -4,13 +4,16 @@ import scala.swing.event._
 import TabbedPane._
 import javax.swing.ImageIcon
 import javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE
+import scala.io.Source
 
 object CreateMyList {
-  
+      
+	case class Spanglish(spanish: String, english: String)
+    var db = List[Spanglish]()  
+
   def main(args: Array[String]) = {
-   
-    case class Spanglish(spanish: String, english: String)
-    var db = List[Spanglish]()   
+ 
+ 
     val userEnglishField = new TextField("")
     val userSpanishField = new TextField("")
     
@@ -24,7 +27,16 @@ object CreateMyList {
       
       val clearButton = new Button{
         text = "Clear Your List!" 
-      }    
+      }
+      
+      val saveButton = new Button{
+        text = "Save Your List"
+      } 
+      
+      val openButton = new Button{
+        text = "Open a List!" 
+      }
+      
       
       var clearLabel = new Label {
         listenTo(clearButton)
@@ -55,18 +67,21 @@ object CreateMyList {
             addLabel
           case ButtonClicked(`clearButton`) =>
             clearLabel
+          case ButtonClicked(`openButton`) =>
+            openFile
         }
      }      
      
     val database = new ListView(db.map(_.spanish)) {  
       listData = Seq(" ")
-      listenTo(addButton, clearButton, addLabel, clearLabel) 
+      listenTo(addButton, clearButton, addLabel, clearLabel, saveButton, openButton) 
       reactions += {
         case ButtonClicked(`addButton`) =>  //partial function only listen to SelectionChanged
           listData = db.map(_.spanish)
         case ButtonClicked(`clearButton`)  =>  //partial function only listen to SelectionChanged
           listData = Seq(" ")
-          }
+      	}
+      
       }
     
     //start of CreateList layout
@@ -85,10 +100,12 @@ object CreateMyList {
         } -> West
         layout += userEnglishField -> Center
         }
-      contents += new GridPanel(1,2) {
+      contents += new GridPanel(2,2) {
         border = Swing.EmptyBorder(4,10,4,10)
         contents += addButton
         contents += clearButton
+        contents += saveButton
+        contents += openButton
       }
       contents += displayLabel
       } -> Center
@@ -176,5 +193,19 @@ object CreateMyList {
     override def closeOperation() { close() }
     }
     mainFrame.open
+  }
+	  //function used to choose and open a text file with
+  //a list in it!
+  def openFile {
+    val chooser = new FileChooser 
+    val src = Source.fromFile(chooser.selectedFile)  //setting src to the selected file
+    val lines = src.getLines
+    
+    while (lines.hasNext){  
+    val spanWord = lines.next
+    val engWord = lines.next
+    val use = new Spanglish(spanWord, engWord)
+    db = db:+use
+    } 
   }
 }
