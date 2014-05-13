@@ -4,56 +4,58 @@ import BorderPanel.Position._ // for BorderPanel location
 import scala.swing.event._ // for events
 import TabbedPane._ 
 import javax.swing.ImageIcon // for importing images
+import scala.io.Source // for importing txt file
 
 object Study {
   
-  def main(args: Array[String]) = {
-  
-  val tabs = new TabbedPane {
+  case class Spanglish(spanish: String, english: String, loc: String)
     
-    pages += new Page("Study List", new BorderPanel {
+  // function that creates a Spanglish object 
+  def createObj(line: String) = {
+    val p = line.split("\t") // elements are separated by tabs
+    val spanish = p(0) 
+    val english = p(1)
+    val loc = p(2)
+    Spanglish(spanish, english,loc)   
+  }
+    
+    // imports text file
+    val source = Source.fromFile("Spanglish.txt")
+  
+    // reads text file line by line
+    val lines = source.getLines
+
+    
+    // puts each line into a List
+    val db = lines.map(createObj).toList
+
+    
+    source.close
+  
+  def main(args: Array[String]) = {
+     
+    val tabs = new TabbedPane {
       
-      case class Spanglish(spanish: String, english: String)
-      
-      var db1 = Array[Spanglish](
-        Spanglish("hola", "hello"),
-        Spanglish("adios", "bye"),
-        Spanglish("gracias", "thank you"),
-        Spanglish("de nada", "welcome"),
-        Spanglish("bien", "good"),
-        Spanglish("malo", "bad"), 
-        Spanglish("numero", "number"),
-        Spanglish("uno", "one"),
-        Spanglish("dos", "two"),
-        Spanglish("tres", "three"),
-        Spanglish("buenos dias", "good morning"),
-        Spanglish("buenas tardes", "good afternoon"),
-        Spanglish("buenas noches", "good evening"),
-        Spanglish("el padre", "father"),
-        Spanglish("la madre", "mother"),
-        Spanglish("el hermano", "brother"),
-        Spanglish("la hermana", "sister"),
-        Spanglish("el tio", "uncle"),
-        Spanglish("el primo", "cousin"),
-        Spanglish("la familia", "family")
-        )
+      ////////// start of Study List page //////////
+      pages += new Page("Study List", new BorderPanel { 
         
-    val spanishField = new Label("")
-    val englishField = new Label("")    
+        val spanishField = new Label("")
+        val englishField = new Label("")    
         
-    val database = new ListView(db1.map(_.spanish)) {
-      listenTo(selection) 
-      reactions += {
-        case event: SelectionChanged =>  //partial function only listen to SelectionChanged
-          val theDB = db1(selection.leadIndex)
-          spanishField.text = theDB.spanish
-          englishField.text = theDB.english
+        // creates a ListView from the db List displaying the Spanish word of each Spanglish object
+        // executes when user makes a selection in  list view
+        val database = new ListView(db.map(_.spanish)) {
+          listenTo(selection) 
+          reactions += {
+            case event: SelectionChanged =>  //partial function only listens to SelectionChanged
+            val theDB = db(selection.leadIndex)
+            spanishField.text = theDB.spanish
+            englishField.text = theDB.english
           }
-      }    
+        }    
     
       // beginning of layout for study list page
         border = Swing.EmptyBorder(10, 10, 10, 10)
-        layout += new ScrollPane(database) -> West
         layout += new BorderPanel {
           layout += new GridPanel(3,1){
             contents += new Label("Please select a Spanish word to translate.")
@@ -66,33 +68,21 @@ object Study {
               border = Swing.EmptyBorder(10, 50, 10, 50)
               layout += new Label("English: ") -> West
               layout += englishField -> Center
-            }           
-          } -> North
-        } -> Center     
-    }) // end of study list page
+              }           
+            } -> North
+            layout += new ScrollPane(database) -> South
+          } -> Center     
+      }) // end of study list page
     
-   pages += new Page("Study Images", new BorderPanel {
-      
-      case class Spanglish(spanish: String, english: String, loc: String)
-    
-      var db = Array[Spanglish](
-        Spanglish("uno", "one", "src/images/uno.jpg"),
-        Spanglish("dos", "two", "src/images/dos.jpg"),
-        Spanglish("tres", "three", "src/images/tres.jpg"),
-        Spanglish("el padre", "father", "src/images/padre.jpg"),
-        Spanglish("la madre", "mother", "src/images/madre.jpg"),
-        Spanglish("el hermano", "brother", "src/images/hermano.jpg"),
-        Spanglish("la hermana", "sister", "src/images/hermana.jpg"),
-        Spanglish("el tio", "uncle", "src/images/tio.jpg"),
-        Spanglish("el primo", "cousin", "src/images/primo.jpg")
-        )
-    
-      val spanishField = new Label("")    
-      val englishField = new TextField("")  
-      val locField = new Label (db.head.loc)
-      var dbCopy = db 
+      ////////// Start of Study Images page //////////
+      pages += new Page("Study Images", new BorderPanel {
+        
+        val spanishField = new Label("")    
+        val englishField = new TextField("")  
+        val locField = new Label (db.head.loc)
+        var dbCopy = db
   
-      // reads in new Images
+      // creates a Label panel which reads in new Images and displays them
       val myImage = new Label { 
         icon = new ImageIcon(locField.text)
       }      
@@ -107,6 +97,8 @@ object Study {
             }
         }
 
+      // creates a button that when clicked displays answer 
+      // executes with itself is clicked
       val answerButton = new Button{
         text = "Answer"
           listenTo(this)
@@ -116,10 +108,11 @@ object Study {
         }         
       }      
  
-      // Loads images to panel depending on what button (next or restart) is clicked.
+      // Loads images to panel depending on what button is clicked.
+      // If next button is clicked loads next image
+      // If restart button is clicked load first image
       def imgPanel = new BorderPanel{
-        layout += myImage -> Center
-        
+        layout += myImage -> Center   
         listenTo(restartButton, nextButton)
         reactions += {
           case ButtonClicked(`restartButton`) =>
@@ -130,7 +123,7 @@ object Study {
         preferredSize = new Dimension(100,100)
        }
       
-      // Function reloads next image to view when nextButton is clicked
+      // Function loads next image to view when nextButton is clicked
       def changeImage {
         if(dbCopy.length == 1){
           spanishField.text = "End of Tutorial"  
@@ -143,11 +136,13 @@ object Study {
             }
       }
       
+      // creates a new button for Next Image
       val nextButton = new Button{
         text = "Next Image"
       }
       
-      // Function reloads images to view when restartButton is clicked
+      // Function reloads first image
+      // executes when restart button is clicked
       def restartImage {
         listenTo(restartButton)
         reactions += {
@@ -159,6 +154,8 @@ object Study {
         }
       }
       
+      // creates a new button for reloading first image
+      // executes when itself is clicked
       val restartButton = new Button{
         text = "Restart Tutorial"
           listenTo(this)
@@ -171,7 +168,7 @@ object Study {
         // beginning of layout for study image page
         layout += imgPanel -> Center
         layout += new GridPanel(2,1) {
-          border = Swing.EmptyBorder(0, 20, 10, 20)
+          border = Swing.EmptyBorder(10, 30, 10, 30)
           contents += spanishField
           contents += new GridPanel(1,3) {
             contents += restartButton
@@ -179,20 +176,15 @@ object Study {
             contents += nextButton 
           }
         } -> South
-           
-
     }) // end of study images page
-    
-    pages += new Page("More Pages ?", new BorderPanel {
-      layout += new Label("Under Construction") -> Center
-    })
   }
   
+  // creates a panel with tabs  
   val ui: Panel = new BorderPanel {
     layout(tabs) = BorderPanel.Position.Center
   }
    
-  
+  // mainframe that displays entire page
   val top = new MainFrame { 
     title = "Translator v2.0 | Study"
     contents = ui

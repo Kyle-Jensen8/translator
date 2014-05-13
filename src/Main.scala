@@ -23,11 +23,11 @@ object Main {
       
       menuBar = new MenuBar {
         contents += new Menu ("Start") {
-          contents += new MenuItem(Action("Translator Quiz") { 
-            Quiz.main(args)
-            })
-          contents += new MenuItem(Action("Study") {
+          contents += new MenuItem(Action("Study") { 
             Study.main(args)
+            })
+          contents += new MenuItem(Action("Translator Quiz") {
+            Quiz.main(args)
             })
           contents += new Separator
           contents += new MenuItem(Action("Translator Ver 1") {
@@ -39,16 +39,10 @@ object Main {
             })
           } 
         contents += new Menu ("My Personal List") {
-          //contents += new MenuItem("View My List") { }
-          //contents += new Separator
           contents += new MenuItem(Action("Manage My List") {
             CreateMyList.main(args)
           })
-          //contents += new MenuItem("Add To My List") { }
-          //contents += new MenuItem("Delete From My List") { }
-          //contents += new MenuItem("Clear My List") { }
-          //contents += new Separator
-          //contents += new MenuItem("Begin Learning My List")
+
     }
   }
   size = new Dimension(450,300)
