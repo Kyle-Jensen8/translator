@@ -145,7 +145,7 @@ object CreateMyList {
        }
      }  
     
-      // beginning of layout for study list page
+        // beginning of layout for study list page
         border = Swing.EmptyBorder(10, 30, 10, 30)
         layout += new BorderPanel {
           layout += new GridPanel(3,1){
@@ -173,7 +173,7 @@ object CreateMyList {
         
     }) // end of study list page      
     
-      //page for multiple choice quiz
+    //page for multiple choice quiz
     pages += new Page("Quiz", new BorderPanel {
       val quizButton = new Button{
         text = "Start Quiz"
@@ -218,7 +218,8 @@ object CreateMyList {
     }
     mainFrame.open
   }
-	  //function used to choose and open a text file with
+	
+  //function used to choose and open a text file with
   //a list in it!
   def openFile {
     val chooser = new FileChooser(null)
@@ -268,6 +269,7 @@ object CreateMyList {
         // holds english word to compare user answer with
         val englishField = new Label(db.head.english)  
         
+        // verifies that first random word is not the same as the answer        
         def check (x : Spanglish) = {
           var newWord = db(Random.nextInt(db.length))
           while(x == newWord){
@@ -276,6 +278,7 @@ object CreateMyList {
           newWord
         }
         
+        // verifies that the second random word is not the same as the answer and first random word
         def check2 (x : Spanglish, x2 : Spanglish ) = {
           var newWord = db(Random.nextInt(db.length))
           while(x == newWord | x2 == newWord){
@@ -290,7 +293,8 @@ object CreateMyList {
         val questionField = new Label("What is the English translation for " + spanishField.text)
         
         var possibleAnswers = List(englishField.text, result.english, result2.english)
-        // shuffles possible answers
+        
+        // shuffles possible answers so they are never in the same order
         var shuffleList = shuffle(possibleAnswers)
 
         var mutex = new ButtonGroup
@@ -306,10 +310,15 @@ object CreateMyList {
         var invisibleRadioButton = new RadioButton {
           this.visible = false
         }
+        
+        // creates a list of 4 radio buttons for each question.
+        // fourth radio button is invisible and used to hold the selection at the
+        // beginning of each question
         var radios = List(answer1, answer2, answer3, invisibleRadioButton)
         
         mutex.buttons ++= radios 
         
+        // selects invisible button in initial start of quiz 
         mutex.select(invisibleRadioButton)
         
         val radioButtons = new BoxPanel(Orientation.Vertical) {
@@ -318,13 +327,15 @@ object CreateMyList {
         
         val submitButton = new Button {
           text = "Submit Answer"
-        }
+        }  
         
-
+        // copy of database. used to help iterate through list.
         var dbCopy = db
+        // keeps track of number of correct answers
         var correctTotal = 0
         
-        def answerLabel = new Label {
+        // Label listens to submit button and checks which radio button was selected for users answer
+        val answerLabel = new Label {
           text = ""
           listenTo(submitButton, radioButtons)
           reactions += {
@@ -336,7 +347,8 @@ object CreateMyList {
                 if (dbCopy.tail.isEmpty){
                     text = ("Excellente!   " + spanishField.text + " -> " + englishField.text)
                     text = ("You got " + correctTotal + "/" + db.length )
-                    submitButton.visible = false         
+                    submitButton.visible = false  
+                    restartButton.visible = true
                 }
                 else {  
                 dbCopy = dbCopy.tail
@@ -362,6 +374,7 @@ object CreateMyList {
                 if(dbCopy.tail.isEmpty){
                   text = ("You got " + correctTotal + "/" + db.length)
                   submitButton.visible = false
+                  restartButton.visible = true
                 }
                 else {
                   dbCopy = dbCopy.tail
@@ -384,7 +397,52 @@ object CreateMyList {
               }
           }
 
+        // Function reloads first image
+        // executes when restart button is clicked
+        def restartQuiz {
+          listenTo(restartButton)
+          reactions += {
+            case ButtonClicked(_) =>
+              dbCopy = db
+              correctTotal = 0
+            
+              start = db.head
+            
+              // displays spanish word to answer
+              spanishField.text = (db.head.spanish) 
+            
+              // holds english word to compare user answer with
+              englishField.text = (db.head.english)
+            
+              result = check(start)
+              result2 = check2(start, result)
+              possibleAnswers = List(englishField.text, result.english, result2.english)
+              shuffleList = shuffle(possibleAnswers)                
+              answer1.text = shuffleList.head
+              answer2.text = shuffleList.tail.head
+              answer3.text = shuffleList.last
+              mutex.select(invisibleRadioButton)
+              questionField.text = ("What is the English translation for " + spanishField.text)
+              spanishField.text =  " " //clear answer
+              answerLabel.text = "" //clear message
+              submitButton.visible = true
+              restartButton.visible = false
+              }
+          }
+      
+          // creates a new button for restarting quiz
+          // executes when itself is clicked
+          val restartButton = new Button{
+            text = "Restart Quiz"
+            listenTo(this)
+            reactions += {
+              case ButtonClicked(_) =>
+              restartQuiz
+            }
+          }
+          restartButton.visible = false
 
+          // beginning of layout for  multiple choice tabbed page
           border = Swing.EmptyBorder(30, 30, 30, 30)
           layout += questionField -> North
           layout += new BorderPanel{
@@ -392,7 +450,11 @@ object CreateMyList {
             layout += radioButtons -> Center
             layout += answerLabel -> South
           } -> Center
-          layout += submitButton -> South
+          layout += new GridPanel (2,1){
+            border = Swing.EmptyBorder(0, 50, 0, 50)
+            contents += restartButton
+            contents += submitButton
+          } ->South
       })
       
       //fill in the blank page
@@ -412,17 +474,12 @@ object CreateMyList {
         val answerButton = new Button {
           text = "Check Answer"  
         }
-        
-        // creates a button to restart test
-        val restartButton = new Button {
-          text = "Restart Test"
-        }
-        
+
         var dbCopy = db
         
         // creates a label will display if user correctly or incorrectly answered question
         // executes when answer button when clicked
-        def answerLabel = new Label {
+        val answerLabel = new Label {
           listenTo(answerButton)
           reactions += {
             case ButtonClicked(_) =>
@@ -433,6 +490,7 @@ object CreateMyList {
                 if (dbCopy.tail.isEmpty){
                   text = ("You got " + correctTotal + "/" + db.length )
                   answerButton.visible = false
+                  restartButton.visible = true
                 }
                 else {
                   dbCopy = dbCopy.tail
@@ -447,6 +505,7 @@ object CreateMyList {
                 if(dbCopy.tail.isEmpty){
                   text = ("You got " + correctTotal + "/" + db.length)
                   answerButton.visible = false
+                  restartButton.visible = true
                  }
                  else {
                    dbCopy = dbCopy.tail
@@ -458,7 +517,45 @@ object CreateMyList {
              }
           }
       
-      // beginning of layout  
+        // Function reloads first image
+        // executes when restart button is clicked
+        def restartQuiz {
+          listenTo(restartButton)
+          reactions += {
+            case ButtonClicked(_) =>
+              dbCopy = db
+              
+              // displays spanish word to answer
+              spanishField.text = dbCopy.head.spanish
+    
+              // holds english word to compare user answer with
+              englishField.text = dbCopy.head.english
+              
+              // user input field to answer question
+              userAnswerField.text = ("")
+              
+              correctTotal = 0
+
+              answerButton.visible = true
+              restartButton.visible = false
+              answerLabel.text = ""
+              }
+          }
+        
+      
+          // creates a new button for restarting quiz
+          // executes when itself is clicked
+         val restartButton = new Button{
+            text = "Restart Quiz"
+            listenTo(this)
+            reactions += {
+              case ButtonClicked(_) =>
+              restartQuiz
+            }
+          }
+          restartButton.visible = false        
+      
+      // beginning of layout for fill in the blank tabbed page 
       layout += new GridPanel(5,1) {
         border = Swing.EmptyBorder(20, 20, 50, 20)
         contents += new Label {
@@ -466,39 +563,34 @@ object CreateMyList {
         }
         contents += spanishField
         contents += new BorderPanel {
-          border = Swing.EmptyBorder(15, 0, 15, 0)
+          border = Swing.EmptyBorder(10, 20, 10, 20)
           layout += new Label{
             text = "My Answer: "
           } -> West
           layout += userAnswerField -> Center
         }
         contents += answerLabel
-        contents += new GridPanel(1,1) {
-          border = Swing.EmptyBorder(10, 40, 10, 40)
+        contents += new GridPanel(2,1) {
+          border = Swing.EmptyBorder(0, 40, 0, 40)
+          contents += restartButton
           contents += answerButton  
         }
-      } -> Center
-      })
+      } -> Center   
+    })
       
     }
     //doing this so I can add it to the mainframe contents
     val gui: Panel = new BorderPanel {
       layout(quizPane) = BorderPanel.Position.Center
     }
-     val mainframe2 = new MainFrame{
+    val mainframe2 = new MainFrame{
     contents = gui 
-    title = "Quiz Section"
+    title = "Translator v2.0 | Quiz"
     centerOnScreen
     size = new Dimension(450,400)
     peer.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE)
     override def closeOperation() { close() }
     }
    mainframe2.open
-  }
-  
-  
-  
-  
-  
-  
+  } 
 }

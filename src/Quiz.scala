@@ -45,6 +45,7 @@ object Quiz {
         // holds english word to compare user answer with
         val englishField = new Label(db.head.english)  
         
+        // verifies that first random word is not the same as the answer
         def check (x : Spanglish) = {
           var newWord = db(Random.nextInt(db.length))
           while(x == newWord){
@@ -53,6 +54,7 @@ object Quiz {
           newWord
         }
         
+        // verifies that the second random word is not the same as the answer and first random word
         def check2 (x : Spanglish, x2 : Spanglish ) = {
           var newWord = db(Random.nextInt(db.length))
           while(x == newWord | x2 == newWord){
@@ -67,10 +69,12 @@ object Quiz {
         val questionField = new Label("What is the English translation for " + spanishField.text)
         
         var possibleAnswers = List(englishField.text, result.english, result2.english)
-        // shuffles possible answers
+        
+        // shuffles possible answers so they are never in the same order
         var shuffleList = shuffle(possibleAnswers)
 
         var mutex = new ButtonGroup
+        
         var answer1 = new RadioButton{
           text = shuffleList.head  
         }
@@ -83,10 +87,15 @@ object Quiz {
         var invisibleRadioButton = new RadioButton {
           this.visible = false
         }
+        
+        // creates a list of 4 radio buttons for each question.
+        // fourth radio button is invisible and used to hold the selection at the
+        // beginning of each question
         var radios = List(answer1, answer2, answer3, invisibleRadioButton)
         
         mutex.buttons ++= radios 
         
+        // selects invisible button in initial start of quiz
         mutex.select(invisibleRadioButton)
         
         val radioButtons = new BoxPanel(Orientation.Vertical) {
@@ -95,13 +104,15 @@ object Quiz {
         
         val submitButton = new Button {
           text = "Submit Answer"
-        }
+        }    
         
-
+        // copy of database. used to help iterate through list.
         var dbCopy = db
+        // keeps track of number of correct answers
         var correctTotal = 0
         
-        def answerLabel = new Label {
+        // Label listens to submit button and checks which radio button was selected for users answer
+        val answerLabel = new Label {
           text = ""
           listenTo(submitButton, radioButtons)
           reactions += {
@@ -113,7 +124,8 @@ object Quiz {
                 if (dbCopy.tail.isEmpty){
                     text = ("Excellente!   " + spanishField.text + " -> " + englishField.text)
                     text = ("You got " + correctTotal + "/" + db.length )
-                    submitButton.visible = false         
+                    submitButton.visible = false 
+                    restartButton.visible = true
                 }
                 else {  
                 dbCopy = dbCopy.tail
@@ -139,6 +151,7 @@ object Quiz {
                 if(dbCopy.tail.isEmpty){
                   text = ("You got " + correctTotal + "/" + db.length)
                   submitButton.visible = false
+                  restartButton.visible = true
                 }
                 else {
                   dbCopy = dbCopy.tail
@@ -160,8 +173,53 @@ object Quiz {
                 }
               }
           }
+        
+        // Function reloads first image
+        // executes when restart button is clicked
+        def restartQuiz {
+          listenTo(restartButton)
+          reactions += {
+            case ButtonClicked(_) =>
+              dbCopy = db
+              correctTotal = 0
+            
+              start = db.head
+            
+              // displays spanish word to answer
+              spanishField.text = (db.head.spanish) 
+            
+              // holds english word to compare user answer with
+              englishField.text = (db.head.english)
+            
+              result = check(start)
+              result2 = check2(start, result)
+              possibleAnswers = List(englishField.text, result.english, result2.english)
+              shuffleList = shuffle(possibleAnswers)                
+              answer1.text = shuffleList.head
+              answer2.text = shuffleList.tail.head
+              answer3.text = shuffleList.last
+              mutex.select(invisibleRadioButton)
+              questionField.text = ("What is the English translation for " + spanishField.text)
+              spanishField.text =  " " //clear answer
+              answerLabel.text = "" //clear message
+              submitButton.visible = true
+              restartButton.visible = false
+              }
+          }
+      
+          // creates a new button for restarting quiz
+          // executes when itself is clicked
+          val restartButton = new Button{
+            text = "Restart Quiz"
+            listenTo(this)
+            reactions += {
+              case ButtonClicked(_) =>
+              restartQuiz
+            }
+          }
+          restartButton.visible = false
 
-
+          // beginning of layout for  multiple choice tabbed page
           border = Swing.EmptyBorder(30, 30, 30, 30)
           layout += questionField -> North
           layout += new BorderPanel{
@@ -169,7 +227,11 @@ object Quiz {
             layout += radioButtons -> Center
             layout += answerLabel -> South
           } -> Center
-          layout += submitButton -> South
+          layout += new GridPanel (2,1){
+            border = Swing.EmptyBorder(0, 50, 0, 50)
+            contents += restartButton
+            contents += submitButton
+          } ->South
       })
       
       pages += new Page("Fill In Blank", new BorderPanel {
@@ -189,16 +251,12 @@ object Quiz {
           text = "Check Answer"  
         }
         
-        // creates a button to restart test
-        val restartButton = new Button {
-          text = "Restart Test"
-        }
-        
         var dbCopy = db
         
         // creates a label will display if user correctly or incorrectly answered question
         // executes when answer button when clicked
-        def answerLabel = new Label {
+        val answerLabel = new Label {
+          text = " "
           listenTo(answerButton)
           reactions += {
             case ButtonClicked(_) =>
@@ -209,6 +267,7 @@ object Quiz {
                 if (dbCopy.tail.isEmpty){
                   text = ("You got " + correctTotal + "/" + db.length )
                   answerButton.visible = false
+                  restartButton.visible = true
                 }
                 else {
                   dbCopy = dbCopy.tail
@@ -223,6 +282,7 @@ object Quiz {
                 if(dbCopy.tail.isEmpty){
                   text = ("You got " + correctTotal + "/" + db.length)
                   answerButton.visible = false
+                  restartButton.visible = true
                  }
                  else {
                    dbCopy = dbCopy.tail
@@ -233,8 +293,46 @@ object Quiz {
                }
              }
           }
+        
+        // Function reloads first image
+        // executes when restart button is clicked
+        def restartQuiz {
+          listenTo(restartButton)
+          reactions += {
+            case ButtonClicked(_) =>
+              dbCopy = db
+              
+              // displays spanish word to answer
+              spanishField.text = dbCopy.head.spanish
+    
+              // holds english word to compare user answer with
+              englishField.text = dbCopy.head.english
+              
+              // user input field to answer question
+              userAnswerField.text = ("")
+              
+              correctTotal = 0
+
+              answerButton.visible = true
+              restartButton.visible = false
+              answerLabel.text = ""
+              }
+          }
+        
       
-      // beginning of layout  
+          // creates a new button for restarting quiz
+          // executes when itself is clicked
+         val restartButton = new Button{
+            text = "Restart Quiz"
+            listenTo(this)
+            reactions += {
+              case ButtonClicked(_) =>
+              restartQuiz
+            }
+          }
+          restartButton.visible = false        
+      
+      // beginning of layout for fill in the blank tabbed page 
       layout += new GridPanel(5,1) {
         border = Swing.EmptyBorder(20, 20, 50, 20)
         contents += new Label {
@@ -242,15 +340,16 @@ object Quiz {
         }
         contents += spanishField
         contents += new BorderPanel {
-          border = Swing.EmptyBorder(15, 0, 15, 0)
+          border = Swing.EmptyBorder(10, 20, 10, 20)
           layout += new Label{
             text = "My Answer: "
           } -> West
           layout += userAnswerField -> Center
         }
         contents += answerLabel
-        contents += new GridPanel(1,1) {
-          border = Swing.EmptyBorder(10, 40, 10, 40)
+        contents += new GridPanel(2,1) {
+          border = Swing.EmptyBorder(0, 40, 0, 40)
+          contents += restartButton
           contents += answerButton  
         }
       } -> Center   

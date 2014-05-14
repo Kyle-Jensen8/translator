@@ -38,7 +38,7 @@ object Main {
             sys.exit(0)
             })
           } 
-        contents += new Menu ("My Personal List") {
+        contents += new Menu ("My List") {
           contents += new MenuItem(Action("Manage My List") {
             CreateMyList.main(args)
           })
