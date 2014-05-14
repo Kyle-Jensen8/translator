@@ -11,7 +11,9 @@ object CreateMyList {
 	case class Spanglish(spanish: String, english: String)
     var db = List[Spanglish]()  
 
-  def main(args: Array[String]) = {
+    
+    def main(args: Array[String]) = {
+	  
  
  
     val userEnglishField = new TextField("")
@@ -29,14 +31,13 @@ object CreateMyList {
         text = "Clear Your List!" 
       }
       
-      val saveButton = new Button{
-        text = "Save Your List"
-      } 
-      
-      val openButton = new Button{
-        text = "Open a List!" 
+      val openButton = new Button {
+        text = "Choose existing list"
       }
       
+      val saveButton = new Button {
+        text = "Save Your List"
+      }
       
       var clearLabel = new Label {
         listenTo(clearButton)
@@ -60,26 +61,30 @@ object CreateMyList {
         }
      } 
      
+     
      val displayLabel = new Label {
-        listenTo(addButton, clearButton)
+        listenTo(addButton)
         reactions += {
           case ButtonClicked(`addButton`) => 
             addLabel
           case ButtonClicked(`clearButton`) =>
             clearLabel
-          case ButtonClicked(`openButton`) =>
-            openFile
         }
      }      
      
     val database = new ListView(db.map(_.spanish)) {  
       listData = Seq(" ")
-      listenTo(addButton, clearButton, addLabel, clearLabel, saveButton, openButton) 
+      listenTo(addButton, clearButton, addLabel, clearLabel, openButton, saveButton) 
       reactions += {
         case ButtonClicked(`addButton`) =>  //partial function only listen to SelectionChanged
           listData = db.map(_.spanish)
         case ButtonClicked(`clearButton`)  =>  //partial function only listen to SelectionChanged
           listData = Seq(" ")
+        case ButtonClicked(`openButton`) =>
+          openFile
+          listData = db.map(_.spanish)
+        case ButtonClicked(`saveButton`) =>
+          saveFile
       	}
       
       }
@@ -107,6 +112,8 @@ object CreateMyList {
         contents += saveButton
         contents += openButton
       }
+      
+      
       contents += displayLabel
       } -> Center
       layout += new ScrollPane(database) -> South
@@ -185,6 +192,13 @@ object CreateMyList {
     }
     
     val mainFrame = new MainFrame {
+    menuBar = new MenuBar {
+        contents += new Menu("File"){
+        contents += new MenuItem(Action("Open")(openFile))
+        contents += new Separator 
+        contents += new MenuItem(Action("Save")(saveFile)) //TODO: write saveFile
+      }
+    }
     contents = ui
     title = "Translator v2.0 | Managing Personal List"
     centerOnScreen
@@ -197,15 +211,34 @@ object CreateMyList {
 	  //function used to choose and open a text file with
   //a list in it!
   def openFile {
-    val chooser = new FileChooser 
+    val chooser = new FileChooser(null)
+    chooser.showOpenDialog(null)
     val src = Source.fromFile(chooser.selectedFile)  //setting src to the selected file
     val lines = src.getLines
-    
     while (lines.hasNext){  
     val spanWord = lines.next
     val engWord = lines.next
     val use = new Spanglish(spanWord, engWord)
     db = db:+use
-    } 
+    }
+  src.close()
   }
+  
+    //function used to save your current list to a text file
+  def saveFile{
+    val chooser = new FileChooser(null)
+    chooser.showSaveDialog(null)
+    val pw = new java.io.PrintWriter(chooser.selectedFile) //makes a printwriter to the selected file
+    var index = 0
+    while (index < db.length){ 
+        var spanObj = db(index)
+        var spanWord = spanObj.spanish
+    	var engWord = spanObj.english
+    	pw.println(spanWord)
+    	pw.println(engWord)
+    	index = index+1
+  }
+    pw.close()
+  }
+
 }
