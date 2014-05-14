@@ -183,7 +183,8 @@ object CreateMyList {
         listenTo(quizButton)
         reactions += {
           case ButtonClicked(quizButton) =>
-            quiz 
+            if (db.length >= 3)
+              quiz
         } 
       }
       
