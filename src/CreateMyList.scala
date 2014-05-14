@@ -82,14 +82,14 @@ object CreateMyList {
     border = Swing.EmptyBorder(0, 30, 10, 30)
     layout += new GridPanel(3,1) {
       contents += new BorderPanel{
-        border = Swing.EmptyBorder(15, 0, 0, 0)
+        border = Swing.EmptyBorder(30, 0, 0, 0)
         layout += new Label {
           text = "Enter your Spanish Word  "
         } -> West 
         layout += userSpanishField -> Center
       }
       contents += new BorderPanel{
-        border = Swing.EmptyBorder(0, 0, 15, 0)
+        border = Swing.EmptyBorder(0, 0, 30, 0)
         layout += new Label {
           text = "Enter your English Word  "
         } -> West
@@ -180,19 +180,25 @@ object CreateMyList {
       }
       
       var clearLabel = new Label {
+        text = " "
         listenTo(quizButton)
         reactions += {
           case ButtonClicked(quizButton) =>
-            if (db.length >= 3)
+            if (db.length >= 3){
               quiz
+              text = " "
+            }
+            else text = "Your list is too short. Must be 3 or more words to continue."
         } 
       }
       
       layout += new BorderPanel{
         layout += new GridPanel(1,1){
-          border = Swing.EmptyBorder(150, 100, 150, 100)
+          border = Swing.EmptyBorder(150, 100, 130, 100)
           contents += quizButton
         }-> Center
+        border = Swing.EmptyBorder(0, 0, 10, 0)
+        layout += clearLabel -> South
       }-> Center
     	})     
     }
