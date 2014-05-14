@@ -59,18 +59,7 @@ object CreateMyList {
             }
           }
         }
-     } 
-     
-     
-     val displayLabel = new Label {
-        listenTo(addButton)
-        reactions += {
-          case ButtonClicked(`addButton`) => 
-            addLabel
-          case ButtonClicked(`clearButton`) =>
-            clearLabel
-        }
-     }      
+     }     
      
     val database = new ListView(db.map(_.spanish)) {  
       listData = Seq(" ")
@@ -90,31 +79,29 @@ object CreateMyList {
       }
     
     //start of CreateList layout
-    border = Swing.EmptyBorder(10, 30, 10, 30)
-    layout += new GridPanel(5,1) {
-      contents += addLabel
+    border = Swing.EmptyBorder(0, 30, 10, 30)
+    layout += new GridPanel(3,1) {
       contents += new BorderPanel{
+        border = Swing.EmptyBorder(15, 0, 0, 0)
         layout += new Label {
           text = "Enter your Spanish Word  "
         } -> West 
         layout += userSpanishField -> Center
       }
       contents += new BorderPanel{
+        border = Swing.EmptyBorder(0, 0, 15, 0)
         layout += new Label {
           text = "Enter your English Word  "
         } -> West
         layout += userEnglishField -> Center
         }
       contents += new GridPanel(2,2) {
-        border = Swing.EmptyBorder(4,10,4,10)
+        border = Swing.EmptyBorder(0,10,0,10)
         contents += addButton
         contents += clearButton
         contents += saveButton
         contents += openButton
       }
-      
-      
-      contents += displayLabel
       } -> Center
       layout += new ScrollPane(database) -> South
       })
