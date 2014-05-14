@@ -5,6 +5,9 @@ import TabbedPane._
 import javax.swing.ImageIcon
 import javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE
 import scala.io.Source
+import scala.swing.RadioMenuItem
+import scala.util.Random
+
 
 object CreateMyList {
       
@@ -170,29 +173,29 @@ object CreateMyList {
         
     }) // end of study list page      
     
+      //page for multiple choice quiz
     pages += new Page("Quiz", new BorderPanel {
       val quizButton = new Button{
         text = "Start Quiz"
       }
       
-      var quizLabel = new Label {
+      var clearLabel = new Label {
         listenTo(quizButton)
         reactions += {
           case ButtonClicked(quizButton) =>
-            quiz
+            quiz 
         } 
       }
+      
       layout += new BorderPanel{
         layout += new GridPanel(1,1){
           border = Swing.EmptyBorder(150, 100, 150, 100)
           contents += quizButton
         }-> Center
       }-> Center
-    	})
-      
+    	})     
     }
-    
-    
+  
     
     val ui: Panel = new BorderPanel {
       layout(tabPane) = BorderPanel.Position.Center
@@ -242,16 +245,249 @@ object CreateMyList {
   }
   
   //this function pops up the windows and lets you do two different quizes
-  def quiz{
-    //creating new pane to put up for the quizes
-    val tab2 = new TabbedPane{
-      pages += new Page("Fill in the Blank", new BorderPanel {
+ import scala.util.Random._
+  def quiz{    
+    //this is where all of the UI goes for the quiz
+    val quizPane = new TabbedPane{
+      
+      //multiple choice page
+      pages += new Page("Multiple Choice", new BorderPanel {
+        
+                var start = db.head
+    
+        // displays spanish word to answer
+        val spanishField = new Label(db.head.spanish) 
+    
+        // holds english word to compare user answer with
+        val englishField = new Label(db.head.english)  
+        
+        def check (x : Spanglish) = {
+          var newWord = db(Random.nextInt(db.length))
+          while(x == newWord){
+            newWord = db(Random.nextInt(db.length))
+          }
+          newWord
+        }
+        
+        def check2 (x : Spanglish, x2 : Spanglish ) = {
+          var newWord = db(Random.nextInt(db.length))
+          while(x == newWord | x2 == newWord){
+            newWord = db(Random.nextInt(db.length))
+          }
+          newWord
+        }
+        
+        var result = check(start)
+        var result2 = check2(start, result)
+        
+        val questionField = new Label("What is the English translation for " + spanishField.text)
+        
+        var possibleAnswers = List(englishField.text, result.english, result2.english)
+        // shuffles possible answers
+        var shuffleList = shuffle(possibleAnswers)
+
+        var mutex = new ButtonGroup
+        var answer1 = new RadioButton{
+          text = shuffleList.head  
+        }
+        var answer2 = new RadioButton{
+          text = shuffleList.tail.head
+        }   
+        var answer3 = new RadioButton{
+          text = shuffleList.last
+        }
+        var invisibleRadioButton = new RadioButton {
+          this.visible = false
+        }
+        var radios = List(answer1, answer2, answer3, invisibleRadioButton)
+        
+        mutex.buttons ++= radios 
+        
+        mutex.select(invisibleRadioButton)
+        
+        val radioButtons = new BoxPanel(Orientation.Vertical) {
+          contents ++= radios
+        }
+        
+        val submitButton = new Button {
+          text = "Submit Answer"
+        }
+        
+
+        var dbCopy = db
+        var correctTotal = 0
+        
+        def answerLabel = new Label {
+          text = ""
+          listenTo(submitButton, radioButtons)
+          reactions += {
+            case ButtonClicked(submitButton) =>
+              // if user correctly answers question
+              if(mutex.selected.get.text == englishField.text){
+                correctTotal += 1
+                text = ("Excellente!   " + spanishField.text + " -> " + englishField.text)
+                if (dbCopy.tail.isEmpty){
+                    text = ("Excellente!   " + spanishField.text + " -> " + englishField.text)
+                    text = ("You got " + correctTotal + "/" + db.length )
+                    submitButton.visible = false         
+                }
+                else {  
+                dbCopy = dbCopy.tail
+                start = dbCopy.head
+                spanishField.text = (dbCopy.head.spanish) 
+                englishField.text = (dbCopy.head.english)  
+
+                result = check(start)
+                result2 = check2(start, result)
+                
+                possibleAnswers = List(englishField.text, result.english, result2.english)
+                shuffleList = shuffle(possibleAnswers)                
+                answer1.text = shuffleList.head
+                answer2.text = shuffleList.tail.head
+                answer3.text = shuffleList.last
+                mutex.select(invisibleRadioButton)      
+                questionField.text = ("What is the English translation for " + spanishField.text)
+                }
+              }
+              // else user incorrectly answers question
+              else {
+                text = ("Lo siento, your are incorrect!   " + spanishField.text + " -> " + englishField.text)
+                if(dbCopy.tail.isEmpty){
+                  text = ("You got " + correctTotal + "/" + db.length)
+                  submitButton.visible = false
+                }
+                else {
+                  dbCopy = dbCopy.tail
+                  start = dbCopy.head
+                  spanishField.text = (dbCopy.head.spanish) 
+                  englishField.text = (dbCopy.head.english) 
+                  
+                  result = check(start)
+                  result2 = check2(start, result)
+                
+                  possibleAnswers = List(englishField.text, result.english, result2.english)
+                  shuffleList = shuffle(possibleAnswers)                
+                  answer1.text = shuffleList.head
+                  answer2.text = shuffleList.tail.head
+                  answer3.text = shuffleList.last
+                  mutex.select(invisibleRadioButton)      
+                  questionField.text = ("What is the English translation for " + spanishField.text)
+                  }
+                }
+              }
+          }
+
+
+          border = Swing.EmptyBorder(30, 30, 30, 30)
+          layout += questionField -> North
+          layout += new BorderPanel{
+            border = Swing.EmptyBorder(30, 0, 30, 0)
+            layout += radioButtons -> Center
+            layout += answerLabel -> South
+          } -> Center
+          layout += submitButton -> South
       })
       
-      pages += new Page("Multiple Choice", new BorderPanel {
-    })
+      //fill in the blank page
+      pages += new Page("Fill in the Blank", new BorderPanel {
+        
+                // displays spanish word to answer
+        val spanishField = new Label(db.head.spanish) 
+    
+        // holds english word to compare user answer with
+        val englishField = new TextField(db.head.english)   
+    
+        // user input field to answer question
+        val userAnswerField = new TextField("")
+        var correctTotal = 0
+
+        // creates a button to check answer
+        val answerButton = new Button {
+          text = "Check Answer"  
+        }
+        
+        // creates a button to restart test
+        val restartButton = new Button {
+          text = "Restart Test"
+        }
+        
+        var dbCopy = db
+        
+        // creates a label will display if user correctly or incorrectly answered question
+        // executes when answer button when clicked
+        def answerLabel = new Label {
+          listenTo(answerButton)
+          reactions += {
+            case ButtonClicked(_) =>
+              // if user correctly answers question
+              if(englishField.text == userAnswerField.text){
+                correctTotal += 1
+                text = ("Excellente!   " + spanishField.text + " -> " + englishField.text)
+                if (dbCopy.tail.isEmpty){
+                  text = ("You got " + correctTotal + "/" + db.length )
+                  answerButton.visible = false
+                }
+                else {
+                  dbCopy = dbCopy.tail
+                  spanishField.text = dbCopy.head.spanish
+                  englishField.text = dbCopy.head.english
+                  userAnswerField.text = ""
+                }
+              }
+              // else user incorrectly answers question
+              else {
+                text = ("Lo siento, your are incorrect!   " + spanishField.text + " -> " + englishField.text)
+                if(dbCopy.tail.isEmpty){
+                  text = ("You got " + correctTotal + "/" + db.length)
+                  answerButton.visible = false
+                 }
+                 else {
+                   dbCopy = dbCopy.tail
+                   spanishField.text = dbCopy.head.spanish
+                   englishField.text = dbCopy.head.english
+                   userAnswerField.text = ""
+                 }
+               }
+             }
+          }
+      
+      // beginning of layout  
+      layout += new GridPanel(5,1) {
+        border = Swing.EmptyBorder(20, 20, 50, 20)
+        contents += new Label {
+          text = "Translate the Spanish word into English: "
+        }
+        contents += spanishField
+        contents += new BorderPanel {
+          border = Swing.EmptyBorder(15, 0, 15, 0)
+          layout += new Label{
+            text = "My Answer: "
+          } -> West
+          layout += userAnswerField -> Center
+        }
+        contents += answerLabel
+        contents += new GridPanel(1,1) {
+          border = Swing.EmptyBorder(10, 40, 10, 40)
+          contents += answerButton  
+        }
+      } -> Center
+      })
+      
+    }
+    //doing this so I can add it to the mainframe contents
+    val gui: Panel = new BorderPanel {
+      layout(quizPane) = BorderPanel.Position.Center
+    }
+     val mainframe2 = new MainFrame{
+    contents = gui 
+    title = "Quiz Section"
+    centerOnScreen
+    size = new Dimension(450,400)
+    peer.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE)
+    override def closeOperation() { close() }
+    }
+   mainframe2.open
   }
- }
   
   
   
