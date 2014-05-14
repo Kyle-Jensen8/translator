@@ -13,9 +13,6 @@ object CreateMyList {
 
     
     def main(args: Array[String]) = {
-	  
- 
- 
     val userEnglishField = new TextField("")
     val userSpanishField = new TextField("")
     
@@ -172,20 +169,36 @@ object CreateMyList {
         } -> South
         
     }) // end of study list page      
+    
+    pages += new Page("Quiz", new BorderPanel {
+      val quizButton = new Button{
+        text = "Start Quiz"
+      }
+      
+      var quizLabel = new Label {
+        listenTo(quizButton)
+        reactions += {
+          case ButtonClicked(quizButton) =>
+            quiz
+        } 
+      }
+      layout += new BorderPanel{
+        layout += new GridPanel(1,1){
+          border = Swing.EmptyBorder(150, 100, 150, 100)
+          contents += quizButton
+        }-> Center
+      }-> Center
+    	})
+      
     }
+    
+    
     
     val ui: Panel = new BorderPanel {
       layout(tabPane) = BorderPanel.Position.Center
     }
     
     val mainFrame = new MainFrame {
-    menuBar = new MenuBar {
-        contents += new Menu("File"){
-        contents += new MenuItem(Action("Open")(openFile))
-        contents += new Separator 
-        contents += new MenuItem(Action("Save")(saveFile)) //TODO: write saveFile
-      }
-    }
     contents = ui
     title = "Translator v2.0 | Managing Personal List"
     centerOnScreen
@@ -227,5 +240,22 @@ object CreateMyList {
   }
     pw.close()
   }
-
+  
+  //this function pops up the windows and lets you do two different quizes
+  def quiz{
+    //creating new pane to put up for the quizes
+    val tab2 = new TabbedPane{
+      pages += new Page("Fill in the Blank", new BorderPanel {
+      })
+      
+      pages += new Page("Multiple Choice", new BorderPanel {
+    })
+  }
+ }
+  
+  
+  
+  
+  
+  
 }
