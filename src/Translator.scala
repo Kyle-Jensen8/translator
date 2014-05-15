@@ -1,3 +1,7 @@
+/*Authors: Kyle Jensen and Mark Gapasin
+ * 
+ */
+
 object Translator {
 
  def main(args: Array[String]): Unit = {

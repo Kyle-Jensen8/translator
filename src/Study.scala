@@ -1,3 +1,6 @@
+/*Authors: Kyle Jensen and Mark Gapasin
+ * 
+ */
 
 import scala.swing._
 import BorderPanel.Position._ // for BorderPanel location

@@ -1,3 +1,7 @@
+/*Authors: Kyle Jensen and Mark Gapasin
+ * 
+ */
+
 import swing._
 import swing.event._
 import TabbedPane._

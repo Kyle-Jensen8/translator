@@ -1,3 +1,7 @@
+/*Authors: Kyle Jensen and Mark Gapasin
+ * 
+ */
+
 import scala.swing._
 import BorderPanel.Position._
 import scala.swing.event._
@@ -11,18 +15,25 @@ import scala.util.Random
 
 object CreateMyList {
       
-	case class Spanglish(spanish: String, english: String)
-    var db = List[Spanglish]()  
+	case class Spanglish(spanish: String, english: String) //creating the class to hold the spanish and english words
+    var db = List[Spanglish]()  //initialize the list that we will use for all the work
 
     
     def main(args: Array[String]) = {
-    val userEnglishField = new TextField("")
+  
+	//these are the two texts boxes the user types in
+	//when making their own list
+	val userEnglishField = new TextField("")
     val userSpanishField = new TextField("")
     
-    val tabPane = new TabbedPane{
+    //here begins the configuration of the first gui that pops up
+    //different than the gui that pops up when you click "start quiz"
+    val tabPane = new TabbedPane{ 
       
       ///////// start of Creating List tab ////////// 
       pages += new Page("Create My List", new BorderPanel {
+      
+      //making most of the buttons  
       val addButton = new Button{
         text = "Add to list!"
       } 
@@ -39,6 +50,8 @@ object CreateMyList {
         text = "Save Your List"
       }
       
+      //a label to listen to the clearButton
+      //when clicked, clears db, the list of spanglish 
       var clearLabel = new Label {
         listenTo(clearButton)
         reactions += {
@@ -47,6 +60,10 @@ object CreateMyList {
         } 
       }
       
+     //label to listen to the addButton and the two text feilds
+     //userSpanishField and userEnglishField
+     //when clicked, as long as both fields are filled, it will 
+     //add the word to db 
      var addLabel = new Label {
         listenTo(addButton, userSpanishField, userEnglishField)
         reactions += {
@@ -61,6 +78,7 @@ object CreateMyList {
         }
      }     
      
+    //ListView that displays the words as you add them to the list 
     val database = new ListView(db.map(_.spanish)) {  
       listData = Seq(" ")
       listenTo(addButton, clearButton, addLabel, clearLabel, openButton, saveButton) 
@@ -78,7 +96,7 @@ object CreateMyList {
       
       }
     
-    //start of CreateList layout
+    //configuring layout for Create My List Tab
     border = Swing.EmptyBorder(0, 30, 10, 30)
     layout += new GridPanel(3,1) {
       contents += new BorderPanel{
@@ -114,12 +132,16 @@ object CreateMyList {
     val spanishField = new Label("")
     val englishField = new Label("") 
      
+    //button when clicked will display the list in the ListView database
     val loadButton = new Button {
       text = "Load My List"
       spanishField.text = ""
       englishField.text = ""
     } 
-        
+    
+    //this list view displays your ist when you click load list
+    //when you click the work, your english word and spanish word 
+    //will be displayed
     val database = new ListView(db.map(_.spanish)) {
       listData = Seq("Please load your list to view")
       listenTo(loadButton, selection) 
@@ -179,6 +201,8 @@ object CreateMyList {
         text = "Start Quiz"
       }
       
+      //listens to quizButton
+      //when quizButton is clicked, calls the quiz function
       var clearLabel = new Label {
         text = " "
         listenTo(quizButton)
@@ -192,6 +216,7 @@ object CreateMyList {
         } 
       }
       
+      //some layout configuration for the quiz tab
       layout += new BorderPanel{
         layout += new GridPanel(1,1){
           border = Swing.EmptyBorder(150, 100, 130, 100)
@@ -254,7 +279,8 @@ object CreateMyList {
   
   //this function pops up the windows and lets you do two different quizes
  import scala.util.Random._
-  def quiz{    
+  
+ def quiz{    
     //this is where all of the UI goes for the quiz
     val quizPane = new TabbedPane{
       
