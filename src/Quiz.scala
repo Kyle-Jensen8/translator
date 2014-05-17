@@ -151,7 +151,7 @@ object Quiz {
               }
               // else user incorrectly answers question
               else {
-                text = ("Lo siento, your are incorrect!   " + spanishField.text + " -> " + englishField.text)
+                text = ("Lo siento, you are incorrect!   " + spanishField.text + " -> " + englishField.text)
                 if(dbCopy.tail.isEmpty){
                   text = ("You got " + correctTotal + "/" + db.length)
                   submitButton.visible = false
@@ -282,7 +282,7 @@ object Quiz {
               }
               // else user incorrectly answers question
               else {
-                text = ("Lo siento, your are incorrect!   " + spanishField.text + " -> " + englishField.text)
+                text = ("Lo siento, you are incorrect!   " + spanishField.text + " -> " + englishField.text)
                 if(dbCopy.tail.isEmpty){
                   text = ("You got " + correctTotal + "/" + db.length)
                   answerButton.visible = false
