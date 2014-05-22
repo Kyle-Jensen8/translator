@@ -9,7 +9,6 @@ import BorderPanel.Position._
 import scala.io.Source
 import scala.util._
 import scala.util.Random._
-import javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE
 import scala.swing.RadioMenuItem
 
 object Quiz {
@@ -43,10 +42,10 @@ object Quiz {
         
         var start = db.head
     
-        // displays spanish word to answer
+        // displays Spanish word to answer
         val spanishField = new Label(db.head.spanish) 
     
-        // holds english word to compare user answer with
+        // holds English word to compare user answer with
         val englishField = new Label(db.head.english)  
         
         // verifies that first random word is not the same as the answer
@@ -306,10 +305,10 @@ object Quiz {
             case ButtonClicked(_) =>
               dbCopy = db
               
-              // displays spanish word to answer
+              // displays Spanish word to answer
               spanishField.text = dbCopy.head.spanish
     
-              // holds english word to compare user answer with
+              // holds English word to compare user answer with
               englishField.text = dbCopy.head.english
               
               // user input field to answer question
@@ -369,6 +368,9 @@ object Quiz {
     title = "Translator v2.0 | Quiz"
     centerOnScreen
     size = new Dimension(450,400)
+    
+    // this allows the user to close window without exiting app
+    import javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE
     peer.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE)
     override def closeOperation() { close() }
     }

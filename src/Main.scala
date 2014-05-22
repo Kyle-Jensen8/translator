@@ -9,14 +9,14 @@ import BorderPanel.Position._ //for borderpanel location
 object Main {
   
   def main(args: Array[String]) = {
-    val frame = new MainFrame { //this is the frame for the whole main main.scala gui
+    val frame = new MainFrame { //this is the frame for the whole main main.scala GUI
       title = "Translator v2.0"
       
-      //reads in image
+      // Creates a new value of a read in image
       val myImage = new Label { 
         icon = new ImageIcon("src/images/translator.gif") //starts looking in main folder
       } 
-      //this is placing the translator image on the fram
+      //this is placing the translator image on the frame
       //and the phrase "translate yourself" at the bottom
       contents = new BorderPanel {
         layout += myImage -> Center
@@ -51,7 +51,9 @@ object Main {
 
     }
   }
+  // sets size of Window    
   size = new Dimension(450,300)
+  // Centers window on the middle of screen
   centerOnScreen
 
   }// end of mainFrame

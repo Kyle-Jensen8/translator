@@ -7,7 +7,6 @@ import BorderPanel.Position._
 import scala.swing.event._
 import TabbedPane._
 import javax.swing.ImageIcon
-import javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE
 import scala.io.Source
 import scala.swing.RadioMenuItem
 import scala.util.Random
@@ -51,7 +50,7 @@ object CreateMyList {
       }
       
       //a label to listen to the clearButton
-      //when clicked, clears db, the list of spanglish 
+      //when clicked, clears db, the list of Spanglish 
       var clearLabel = new Label {
         listenTo(clearButton)
         reactions += {
@@ -60,7 +59,7 @@ object CreateMyList {
         } 
       }
       
-     //label to listen to the addButton and the two text feilds
+     //label to listen to the addButton and the two text fields
      //userSpanishField and userEnglishField
      //when clicked, as long as both fields are filled, it will 
      //add the word to db 
@@ -79,13 +78,14 @@ object CreateMyList {
      }     
      
     //ListView that displays the words as you add them to the list 
+    //Displays Spanish word only 
     val database = new ListView(db.map(_.spanish)) {  
       listData = Seq(" ")
       listenTo(addButton, clearButton, addLabel, clearLabel, openButton, saveButton) 
       reactions += {
-        case ButtonClicked(`addButton`) =>  //partial function only listen to SelectionChanged
+        case ButtonClicked(`addButton`) =>  
           listData = db.map(_.spanish)
-        case ButtonClicked(`clearButton`)  =>  //partial function only listen to SelectionChanged
+        case ButtonClicked(`clearButton`)  =>  
           listData = Seq(" ")
         case ButtonClicked(`openButton`) =>
           openFile
@@ -127,8 +127,7 @@ object CreateMyList {
    ///////// start of Study List tab //////////  
    pages += new Page("Study My List", new BorderPanel {
      
-    val theFrame = new BorderPanel() 
-    
+    val theFrame = new BorderPanel()    
     val spanishField = new Label("")
     val englishField = new Label("") 
      
@@ -139,8 +138,8 @@ object CreateMyList {
       englishField.text = ""
     } 
     
-    //this list view displays your ist when you click load list
-    //when you click the work, your english word and spanish word 
+    //this list view displays your list when you click load list
+    //when you click the work, your English word and Spanish word 
     //will be displayed
     val database = new ListView(db.map(_.spanish)) {
       listData = Seq("Please load your list to view")
@@ -202,7 +201,8 @@ object CreateMyList {
       }
       
       //listens to quizButton
-      //when quizButton is clicked, calls the quiz function
+      //when quizButton is clicked, calls the quiz function 
+      //only if new list length is >= 3
       var clearLabel = new Label {
         text = " "
         listenTo(quizButton)
@@ -216,7 +216,7 @@ object CreateMyList {
         } 
       }
       
-      //some layout configuration for the quiz tab
+      // layout configuration for the quiz tab
       layout += new BorderPanel{
         layout += new GridPanel(1,1){
           border = Swing.EmptyBorder(150, 100, 130, 100)
@@ -233,11 +233,15 @@ object CreateMyList {
       layout(tabPane) = BorderPanel.Position.Center
     }
     
+    // set values for the main window on CreateMyList
     val mainFrame = new MainFrame {
     contents = ui
     title = "Translator v2.0 | Managing Personal List"
     centerOnScreen
     size = new Dimension(450,400)
+    
+    // this allows the user to close window without exiting app
+    import javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE
     peer.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE)
     override def closeOperation() { close() }
     }
@@ -260,7 +264,7 @@ object CreateMyList {
   src.close()
   }
   
-    //function used to save your current list to a text file
+   //function used to save your current list to a text file
   def saveFile{
     val chooser = new FileChooser(null)
     chooser.showSaveDialog(null)
@@ -289,10 +293,10 @@ object CreateMyList {
         
                 var start = db.head
     
-        // displays spanish word to answer
+        // displays Spanish word to answer
         val spanishField = new Label(db.head.spanish) 
     
-        // holds english word to compare user answer with
+        // holds English word to compare user answer with
         val englishField = new Label(db.head.english)  
         
         // verifies that first random word is not the same as the answer        
@@ -434,10 +438,10 @@ object CreateMyList {
             
               start = db.head
             
-              // displays spanish word to answer
+              // displays Spanish word to answer
               spanishField.text = (db.head.spanish) 
             
-              // holds english word to compare user answer with
+              // holds English word to compare user answer with
               englishField.text = (db.head.english)
             
               result = check(start)
@@ -486,10 +490,10 @@ object CreateMyList {
       //fill in the blank page
       pages += new Page("Fill in the Blank", new BorderPanel {
         
-                // displays spanish word to answer
+        // displays Spanish word to answer
         val spanishField = new Label(db.head.spanish) 
     
-        // holds english word to compare user answer with
+        // holds English word to compare user answer with
         val englishField = new TextField(db.head.english)   
     
         // user input field to answer question
@@ -551,10 +555,10 @@ object CreateMyList {
             case ButtonClicked(_) =>
               dbCopy = db
               
-              // displays spanish word to answer
+              // displays Spanish word to answer
               spanishField.text = dbCopy.head.spanish
     
-              // holds english word to compare user answer with
+              // holds English word to compare user answer with
               englishField.text = dbCopy.head.english
               
               // user input field to answer question
@@ -605,7 +609,7 @@ object CreateMyList {
     })
       
     }
-    //doing this so I can add it to the mainframe contents
+    // defines new window to add to the mainframe contents
     val gui: Panel = new BorderPanel {
       layout(quizPane) = BorderPanel.Position.Center
     }
@@ -614,6 +618,9 @@ object CreateMyList {
     title = "Translator v2.0 | Quiz"
     centerOnScreen
     size = new Dimension(450,400)
+    
+    // this allows the user to close window without exiting app
+    import javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE
     peer.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE)
     override def closeOperation() { close() }
     }

@@ -31,8 +31,7 @@ object Study {
     
     // puts each line into a List
     val db = lines.map(createObj).toList
-
-    
+   
     source.close
   
   def main(args: Array[String]) = {
